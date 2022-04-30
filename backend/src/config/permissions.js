@@ -1,0 +1,7 @@
+module.exports = [
+  'ALL_ORDERS_PAGE',
+  'SEGMENTED_ORDERS_PAGE',
+  'MY_ORDERS_PAGE',
+  'WAREHOUSE_PAGE',
+  'AGENT_PAGE'
+]
