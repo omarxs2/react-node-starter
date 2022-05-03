@@ -12,18 +12,10 @@ import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { ThemeProvider } from '@mui/material/styles';
-import { styled } from '@mui/material/styles';
 import { useTheme } from '@mui/material/styles'
 import { setToken } from "./store/loginSlice";
 import { useDispatch } from "react-redux";
 
-
-const Img = styled('img')({
-    margin: 'auto',
-    display: 'block',
-    maxWidth: '100%',
-    maxHeight: '100%',
-});
 
 
 function Copyright(props) {
@@ -63,15 +55,14 @@ export default function Login() {
                     sm={4}
                     md={7}
                     sx={{
+                        backgroundImage: 'url(./images/cover.jpg)',
                         backgroundRepeat: 'no-repeat',
-                        backgroundColor: '#262625',
+                        backgroundColor: (t) =>
+                            t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
-                        alignItems: 'center'
                     }}
-                >
-                    <Img alt="complex" src="/images/login.png" />
-                </Grid>
+                />
                 <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
                     <Box
                         sx={{
@@ -114,7 +105,7 @@ export default function Login() {
                                 label="Remember me"
                             />
                             <Button
-                                onClick={()=>{dispatch(setToken('asdasd'))}}
+                                onClick={() => { dispatch(setToken('asdasd')) }}
                                 color='secondary'
                                 type="submit"
                                 fullWidth
