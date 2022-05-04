@@ -2,19 +2,26 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import store from './configureStore'
+// import store from './configureStore'
 import { Provider } from 'react-redux'
 import { BrowserRouter } from 'react-router-dom'
 import { ThemeProvider } from '@mui/material/styles';
 import { theme } from './configs/themeConfigs'
 
+import configureStore from './configureStore';
+import { PersistGate } from 'redux-persist/integration/react'
+
+
+const { store, persistor } = configureStore()
 
 ReactDOM.render(
   <ThemeProvider theme={theme}>
     <Provider store={store}>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
+      <PersistGate loading={null} persistor={persistor}>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </PersistGate>
     </Provider>
   </ThemeProvider>,
   document.getElementById('root')
