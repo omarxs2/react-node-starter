@@ -1,9 +1,10 @@
 const router = require('express').Router();
 const validate = require('../validations/handler');
-const controller = require('../controllers/segment.controller');
-const rules = require('../validations/segment.validation');
+const controller = require('../controllers/price.controller');
+const rules = require('../validations/price.validation');
 
-router.route('/')
+router
+  .route('/')
   .get(controller.list)
   .post(validate(rules.create), controller.create);
 

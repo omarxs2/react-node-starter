@@ -1,10 +1,8 @@
 const bcrypt = require('bcryptjs');
 const _ = require('lodash');
 const User = require('../models/user');
-const Role = require('../models/role');
 const IRepo = require('../repositories/iRepo');
 const authErrors = require('../utils/customErrors/authErrors');
-const roleErrors = require('../utils/customErrors/roleErrors');
 const sendMail = require('../services/sendMail');
 
 /**
@@ -13,10 +11,9 @@ const sendMail = require('../services/sendMail');
  */
 exports.create = async (req, res, next) => {
   try {
-    const roleRepo = new IRepo(Role);
-    const role = await roleRepo.findOneByField(req.body.roleId, 'id');
+    let roleCheck = ['admin', 'agent', 'subagent'].filter(f => f === req.body.role).length
 
-    if (!role) {
+    if (roleCheck < 1) {
       throw roleErrors.ROLE_NOT_EXIST;
     }
     const password = Math.random()
@@ -25,16 +22,17 @@ exports.create = async (req, res, next) => {
 
     req.body.password = password;
     let user = await User.create({
-      ..._.pick(req.body, ['email', 'password', 'name', 'roleId', 'isActive']),
+      ..._.pick(req.body, ['email', 'password', 'name', 'role', 'isActive', 'phone', 'country', 'company', 'logo']),
     });
     user = user.dataValues;
-    sendMail(user.email, 'Welcome to SUMET', 'invite-user', {
-      name: user.name,
-      password,
-      email: user.email,
-    });
+    // sendMail(user.email, 'Welcome to Eduturk', 'invite-user', {
+    //   name: user.name,
+    //   password,
+    //   email: user.email,
+    // });
     return res.json({
       success: true,
+      password
     });
   } catch (e) {
     next(e);
@@ -56,16 +54,21 @@ exports.update = async (req, res, next) => {
       throw authErrors.USER_NOT_FOUND;
     }
 
-    const roleRepo = new IRepo(Role);
-    const role = await roleRepo.findOneByField(user.roleId, 'id');
+    let roleCheck = ['admin', 'agent', 'subagent'].filter(f => f === user.role).length
 
-    if (!role) {
+    if (roleCheck < 1) {
       throw roleErrors.ROLE_NOT_EXIST;
     }
+
     user.name = req.body.name;
     user.email = req.body.email;
     user.isActive = req.body.isActive;
-    user.roleId = req.body.roleId;
+    user.role = req.body.role;
+    user.phone = req.body.phone;
+    user.country = req.body.country;
+    user.company = req.body.company;
+    user.logo = req.body.logo;
+
     if (req.body.password) {
       user.password = await bcrypt.hash(req.body.password, 10);
     }

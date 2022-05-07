@@ -21,20 +21,47 @@ const User = sequelize.define(
         isEmail: { msg: 'Email is not valid' },
       },
     },
+    phone: {
+      type: DataTypes.STRING,
+      defaultValue: '',
+      validate: {
+        notEmpty: { msg: 'Phone is required' },
+      },
+    },
+    country: {
+      type: DataTypes.STRING,
+      defaultValue: '',
+      validate: {
+        notEmpty: { msg: 'Country is required' },
+      },
+    },
+    company: {
+      type: DataTypes.STRING,
+      defaultValue: '',
+      validate: {
+        notEmpty: { msg: 'Company is required' },
+      },
+    },
+    logo: {
+      type: DataTypes.STRING(2048),
+      defaultValue: '',
+      validate: {
+        notEmpty: { msg: 'Logo is required' },
+      },
+    },
     password: {
       type: DataTypes.STRING,
       defaultValue: '',
       validate: {
         notEmpty: { msg: 'Password is required' },
         len: {
-          args: [6],
-          msg: 'Password should be more then 6 chars',
+          args: [4],
+          msg: 'Password should be more then 4 chars',
         },
       },
     },
-
-    roleId: {
-      type: DataTypes.INTEGER,
+    role: {
+      type: DataTypes.STRING,
       validate: {
         notEmpty: { msg: 'Role is required' },
       },

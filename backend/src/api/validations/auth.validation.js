@@ -7,7 +7,7 @@ module.exports = {
     body('email', 'Invalid email').isEmail(),
 
     body('password', 'Password is required').exists(),
-    body('password', 'Passwords must be at least 6 chars long').isLength({ min: 6 }),
+    body('password', 'Passwords must be at least 4 chars long').isLength({ min: 4 }),
 
     body('firstName', 'First name is required').exists(),
     body('firstName', 'First name must be at least 2 chars long').isLength({ min: 2 }),
@@ -21,7 +21,7 @@ module.exports = {
     body('email', 'Invalid email').isEmail(),
 
     body('password', 'Password is required').exists(),
-    body('password', 'Passwords must be at least 6 chars long').isLength({ min: 6 }),
+    body('password', 'Passwords must be at least 4 chars long').isLength({ min: 4 }),
   ],
 
   // POST /auth/forget
@@ -30,10 +30,10 @@ module.exports = {
     body('email', 'Invalid email').isEmail(),
   ],
 
-  // POST /auth/forget
+  // POST /auth/reset-password
   resetPassword: [
     body('oldPassword', 'Old password is required').exists(),
     body('password', 'Password is required').exists(),
-    body('password', 'Passwords must be at least 6 chars long').isLength({ min: 6 }),
+    body('password', 'Passwords must be at least 6 chars long').isLength({ min: 4 }),
   ],
 };

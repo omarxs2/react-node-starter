@@ -37,6 +37,24 @@ exports.USER_NOT_FOUND = new ApiError({
   name: 'USER_NOT_FOUND',
 });
 
+exports.USNIVERSITY_NOT_FOUND = new ApiError({
+  message: "Can't find university with this id",
+  status: 400,
+  name: 'USNIVERSITY_NOT_FOUND',
+});
+
+exports.DEPARTMENT_NOT_FOUND = new ApiError({
+  message: "Can't find department with this id",
+  status: 400,
+  name: 'DEPARTMENT_NOT_FOUND',
+});
+
+exports.PRICE_NOT_FOUND = new ApiError({
+  message: "Can't find price with this id",
+  status: 400,
+  name: 'PRICE_NOT_FOUND',
+});
+
 exports.PASSWORD_NOT_MATCH = new ApiError({
   message: 'Password is wrong',
   status: 400,

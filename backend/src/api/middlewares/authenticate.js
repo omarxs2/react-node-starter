@@ -7,7 +7,7 @@ module.exports = (role) => (req, res, next) => {
   let decoded;
   try {
     const token = req.header('Authorization').replace('Bearer ', '');
-    decoded = jwt.verify(token, role === 'user' ? SESSION_KEY : ADMIN_SESSION_KEY);
+    decoded = jwt.verify(token, role === 'admin' ? ADMIN_SESSION_KEY : SESSION_KEY);
   } catch (error) {
     return next(ACCESS_DENIED);
   }

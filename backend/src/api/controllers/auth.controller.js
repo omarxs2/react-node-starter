@@ -15,7 +15,7 @@ const authResponse = async (req, res, next) => {
 
     res.json({
       token,
-      ..._.pick(req.user, ['email', 'id', 'roleId', 'name']),
+      ..._.pick(req.user, ['id', 'name', 'email', 'phone', 'country', 'company', 'logo', 'role', 'isActive']),
     });
   } catch (e) {
     next(e);
@@ -49,7 +49,7 @@ exports.login = [
           return next(e);
         }
       });
-      req.user = { ..._.pick(user, ['email', 'id', 'roleId', 'name']) };
+      req.user = user;
       return true;
     } catch (e) {
       return next(e);
