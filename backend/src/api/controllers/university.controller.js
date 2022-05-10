@@ -9,12 +9,15 @@ const authErrors = require('../utils/customErrors/authErrors');
  * Returns all universities
  * @public
  */
- exports.list = async (req, res, next) => {
+exports.list = async (req, res, next) => {
   try {
     const universityRepo = new IRepo(University);
 
     const universities = await universityRepo.findAll();
-    return res.json(universities);
+    return res.json({
+      success: true,
+      data: universities
+    });
   } catch (e) {
     next(e);
   }

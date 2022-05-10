@@ -1,8 +1,16 @@
 import { combineReducers } from '@reduxjs/toolkit';
-import counter from './counterSlice';
+import message from './messageSlice';
+import dashboardApp from './dashboardSlice';
+import universityApp from './universitySlice';
+import departmentApp from './departmentSlice';
+import userApp from './userSlice';
 
 const appReducers = combineReducers({
-	counter
+	message,
+	dashboardApp,
+	universityApp,
+	departmentApp,
+	userApp
 });
 
 export default appReducers;

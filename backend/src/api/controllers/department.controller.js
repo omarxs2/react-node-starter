@@ -14,7 +14,10 @@ const authErrors = require('../utils/customErrors/authErrors');
     const departmentRepo = new IRepo(Department);
 
     const departments = await departmentRepo.findAll();
-    return res.json(departments);
+    return res.json({
+      success: true,
+      data: departments
+    });
   } catch (e) {
     next(e);
   }
@@ -30,7 +33,7 @@ exports.create = async (req, res, next) => {
   try {
 
     let department = await Department.create({
-      ..._.pick(req.body, ['department_name_en', 'department_name_ar', 'years']),
+      ..._.pick(req.body, ['department_name_en', 'department_name_ar']),
     });
     department = department.dataValues;
 
@@ -59,8 +62,6 @@ exports.update = async (req, res, next) => {
 
     department.department_name_en = req.body.department_name_en;
     department.department_name_ar = req.body.department_name_ar;
-    department.years = req.body.years;
-
 
     await departmentRepo.updateOneByField(id, department);
     return res.json({

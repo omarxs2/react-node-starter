@@ -3,8 +3,6 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
@@ -13,9 +11,11 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { ThemeProvider } from '@mui/material/styles';
 import { useTheme } from '@mui/material/styles'
-import { setToken } from "./store/loginSlice";
-import { useDispatch } from "react-redux";
-
+import { useDispatch } from 'react-redux';
+import { submitLogin } from './store/loginSlice';
+import Alert from '@mui/material/Alert';
+import Stack from '@mui/material/Stack';
+import LinearProgress from '@mui/material/LinearProgress';
 
 
 function Copyright(props) {
@@ -23,7 +23,7 @@ function Copyright(props) {
         <Typography variant="body2" color="text.secondary" align="center" {...props}>
             {'Copyright © '}
             <Link color="inherit" href="https://www.linkedin.com/in/omarxs/">
-                Your Website
+                Eduturk
             </Link>{' '}
             {new Date().getFullYear()}
             {'.'}
@@ -31,17 +31,28 @@ function Copyright(props) {
     );
 }
 
-
-export default function Login() {
+export default function Login(props) {
     const theme = useTheme()
     const dispatch = useDispatch();
 
+    const [error, setError] = React.useState(false);
+    const [loading, setLoading] = React.useState(false);
+
     const handleSubmit = (event) => {
+        setLoading(true);
+        setError(false);
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-        console.log({
+        dispatch(submitLogin({
             email: data.get('email'),
             password: data.get('password'),
+        })).then((res) => {
+            setLoading(false);
+            if (res) {
+                setError(false)
+            } else {
+                setError(true)
+            }
         });
     };
 
@@ -87,6 +98,7 @@ export default function Login() {
                                 id="email"
                                 label="Email Address"
                                 name="email"
+                                defaultValue={'omar@eduturk.net'}
                                 autoComplete="email"
                                 autoFocus
                             />
@@ -97,15 +109,32 @@ export default function Login() {
                                 name="password"
                                 label="Password"
                                 type="password"
+                                defaultValue={'1234'}
                                 id="password"
                                 autoComplete="current-password"
                             />
-                            <FormControlLabel
-                                control={<Checkbox value="remember" color="primary" />}
-                                label="Remember me"
-                            />
+                            <Grid >
+                                {error &&
+
+                                    <Stack  spacing={2}>
+                                        <Alert sx={{ m: 1, minWidth: 250 }}
+                                            severity="error"
+                                            onClose={() => { setError(false) }}>
+                                            Unauthorized!, Try again later.
+                                        </Alert>
+                                    </Stack>
+                                }
+                                {
+                                    loading &&
+                                    <Stack  spacing={2}>
+                                        <LinearProgress sx={{ m: 1, minWidth: 250 }} />
+                                    </Stack>
+                                }
+                            </Grid>
+
+
+
                             <Button
-                                onClick={() => { dispatch(setToken('asdasd')) }}
                                 color='secondary'
                                 type="submit"
                                 fullWidth
@@ -114,15 +143,10 @@ export default function Login() {
                             >
                                 Sign In
                             </Button>
-                            <Grid container>
-                                <Grid item xs>
-                                    <Link href="#" variant="body2">
-                                        Forgot password?
-                                    </Link>
-                                </Grid>
+                            <Grid container justifyContent="right">
                                 <Grid item>
                                     <Link href="signup" variant="body2">
-                                        {"Don't have an account? Sign Up"}
+                                        {"Wanna Became n Agent? Sign Up"}
                                     </Link>
                                 </Grid>
                             </Grid>

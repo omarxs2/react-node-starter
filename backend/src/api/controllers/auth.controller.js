@@ -15,7 +15,7 @@ const authResponse = async (req, res, next) => {
 
     res.json({
       token,
-      ..._.pick(req.user, ['id', 'name', 'email', 'phone', 'country', 'company', 'logo', 'role', 'isActive']),
+      user: { ..._.pick(req.user, ['id', 'name', 'email', 'phone', 'country', 'company', 'logo', 'role', 'isActive']) },
     });
   } catch (e) {
     next(e);
@@ -132,7 +132,7 @@ exports.forgetPassword = async (req, res, next) => {
  */
 exports.resetPassword = async (req, res, next) => {
   try {
-    const { oldPassword, password } = req.body;
+    const { old_password, new_password } = req.body;
     const userRepo = new IRepo(User);
 
     const user = await userRepo.findOneByField(req.user.id, 'id');
@@ -140,12 +140,12 @@ exports.resetPassword = async (req, res, next) => {
       throw authErrors.USER_NOT_FOUND;
     }
 
-    bcrypt.compare(oldPassword, user.password, async (err, isMatch) => {
+    bcrypt.compare(old_password, user.password, async (err, isMatch) => {
       try {
         if (!isMatch) {
           throw authErrors.PASSWORD_NOT_MATCH;
         } else {
-          user.password = await bcrypt.hash(password, 10);
+          user.password = await bcrypt.hash(new_password, 10);
           await userRepo.updateOneByField(user.id, user);
 
           return res.json({

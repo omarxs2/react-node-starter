@@ -10,6 +10,7 @@ import TableRow from '@mui/material/TableRow';
 import { styled } from '@mui/material/styles';
 import Chip from '@mui/material/Chip';
 import Avatar from '@mui/material/Avatar';
+import Typography from "@mui/material/Typography";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -35,7 +36,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 
 
-export default function StickyHeadTable({ columns, rows, source, rpp, openDialopg,setRowData }) {
+export default function StickyHeadTable({ columns, rows, source, rpp, openDialopg, setRowData, universities, departments }) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(rpp ? rpp : 10);
 
@@ -62,7 +63,7 @@ export default function StickyHeadTable({ columns, rows, source, rpp, openDialop
               {columns.map((column) => (
                 <StyledTableCell
                   key={column.id}
-                  align={'left'}
+                  align={'center'}
                   style={{ minWidth: column.minWidth }}
                 >
                   {column.label}
@@ -77,16 +78,49 @@ export default function StickyHeadTable({ columns, rows, source, rpp, openDialop
                 return (
                   <StyledTableRow onClick={() => rowClick(row)} hover role="checkbox" tabIndex={-1} key={row.code}>
                     {columns.map((column) => {
-                      const value = row[column.id];
+                      const value = row[column.id] || '';
+                      let university = {}
+                      let department = {}
+                      if (source === 'dashboard') {
+                        department = departments.filter(r => r.id === row['department_id'])[0];
+                        university = universities.filter(r => r.id === row['university_id'])[0];
+                      }
                       return (
-                        <StyledTableCell key={column.id} align={'left'}
+                        <StyledTableCell key={column.id} align={'center'}
                         >
-                          {column.id === 'university' ?
-                            <Chip label={value} color="success" variant="filled" /> :
-                            column.id === 'tagcolor' ?
-                              <Chip label={value} color={'success'} variant="filled" sx={{ backgroundColor: value }} /> :
-                              column.id === 'logo' ? <Avatar sx={{ mr: 1 }} alt="logo" src={value} />
-                                : value}
+                          {column.id === 'department_en' ? department.department_name_en :
+                            column.id === 'department_ar' ? department.department_name_ar :
+                              column.id === 'university' ?
+                                <Chip label={university.university_name_en} sx={{ backgroundColor: university.color || '', color: 'white' }} variant="filled" /> :
+                                column.id === 'color' ?
+                                  <Chip label={value} color={'success'} variant="filled" sx={{ backgroundColor: value }} /> :
+                                  column.id === 'logo' ?
+                                    <Avatar sx={{ mr: 1 }} alt="logo" src={value} /> :
+                                    column.id === 'isActive' ?
+                                      <Typography
+                                        variant="h7"
+                                        component="div"
+                                        sx={{ color: value === true ? '#009688' : '#f48fb1' }}>
+                                        {value === true ? 'Active' : 'Suspended'}
+                                      </Typography> :
+                                      column.id === 'role' ?
+                                        <Chip
+                                          label={value}
+                                          color={value === 'Admin' ? 'info' :
+                                            value === 'SubAgent' ? 'warning' : 'primary'}
+                                          variant="filled" /> :
+                                        column.id === 'years' ?
+                                          value + ' Years'
+                                          :
+                                          column.id === 'price_before' || column.id === 'price_after' ?
+                                            <Typography
+                                              variant="h7"
+                                              component="div">
+                                              {value}{row['currency'] === 'usd' ? '$' : 'TL'}
+                                            </Typography>
+
+                                            :
+                                            value.length < 1 ? '---' : value}
                         </StyledTableCell>
                       );
                     })}

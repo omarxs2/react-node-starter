@@ -49,6 +49,12 @@ exports.DEPARTMENT_NOT_FOUND = new ApiError({
   name: 'DEPARTMENT_NOT_FOUND',
 });
 
+exports.ROLE_NOT_EXIST = new ApiError({
+  message: "Can't find this role",
+  status: 400,
+  name: 'ROLE_NOT_EXIST',
+});
+
 exports.PRICE_NOT_FOUND = new ApiError({
   message: "Can't find price with this id",
   status: 400,

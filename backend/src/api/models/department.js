@@ -21,15 +21,6 @@ const Department = sequelize.define(
           },
         },
       },
-      years: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        validate: {
-          notNull: {
-            msg: 'Years is required',
-          },
-        },
-      },
   },
   {
     tableName: 'Department',

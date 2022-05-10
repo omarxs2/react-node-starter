@@ -3,7 +3,7 @@ import { Route, Routes, Navigate } from "react-router-dom";
 import Login from "./auth/Login";
 import SignUp from "./auth/SignUp";
 import Dashboard from './app/views/dashboard/Dashboard';
-import Agents from './app/views/agents/Agents';
+import Users from './app/views/users/Users';
 import Universities from './app/views/universities/Universities';
 import Departments from './app/views/departments/Departments';
 import ApplyNow from "./pages/apply/ApplyNow";
@@ -38,8 +38,8 @@ function App() {
             element={<Dashboard />}
           />
           <Route
-            path="/agents"
-            element={<Agents />}
+            path="/users"
+            element={<Users />}
           />
           <Route
             path="/universities"

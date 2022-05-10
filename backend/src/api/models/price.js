@@ -3,30 +3,21 @@ const { DataTypes } = require('sequelize');
 const Price = sequelize.define(
   'Price',
   {
-    department_name_en: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        notNull: {
-          msg: 'Department name en is required',
-        },
-      },
-    },
-    department_name_ar: {
-        type: DataTypes.STRING,
+      department_id: {
+        type: DataTypes.INTEGER,
         allowNull: false,
         validate: {
           notNull: {
-            msg: 'Department name ar is required',
+            msg: 'Department id is required',
           },
         },
       },
-      university: {
-        type: DataTypes.STRING,
+      university_id: {
+        type: DataTypes.INTEGER,
         allowNull: false,
         validate: {
           notNull: {
-            msg: 'University is required',
+            msg: 'University id is required',
           },
         },
       },
@@ -48,6 +39,15 @@ const Price = sequelize.define(
           },
         },
       },
+      degree: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notNull: {
+            msg: 'Degree is required',
+          },
+        },
+      },
       price_before: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -63,6 +63,15 @@ const Price = sequelize.define(
         validate: {
           notNull: {
             msg: 'Price after is required',
+          },
+        },
+      },
+      currency: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notNull: {
+            msg: 'Currency is required',
           },
         },
       },

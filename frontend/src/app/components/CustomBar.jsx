@@ -13,8 +13,8 @@ import { mainListItems } from './listItems';
 import Avatar from '@mui/material/Avatar';
 import Button from "@mui/material/Button";
 import { deleteToken } from "../../auth/store/loginSlice";
-import { useDispatch } from "react-redux";
-
+import { useDispatch, useSelector } from 'react-redux';
+import CustomDialog from './CustomDialog';
 
 const drawerWidth = 240;
 
@@ -66,18 +66,31 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 
 const CustomBar = (props) => {
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth.loginApp.user)
+
   const [open, setOpen] = React.useState(false);
+  const [openDialog, setOpenDialog] = React.useState(false);
+
   const toggleDrawer = () => {
     setOpen(!open);
   };
 
-  const dispatch = useDispatch();
+
+  const handleClose = () => {
+    setOpenDialog(false);
+  };
+
+  const handleOpen = () => {
+    setOpenDialog(true);
+  };
 
   const logout = () => {
     dispatch(deleteToken());
   };
   return (
     <>
+      <CustomDialog open={openDialog} handleClose={handleClose} rowData={user} />
       <AppBar position="absolute" open={open}>
         <Toolbar
           sx={{
@@ -96,7 +109,7 @@ const CustomBar = (props) => {
           >
             <MenuIcon />
           </IconButton>
-          <Avatar sx={{mr:1}} alt="logo" src="/images/logo.png" />
+          <Avatar sx={{ mr: 1 }} alt="logo" src="/images/logo.png" />
 
           <Typography
             component="h1"
@@ -105,8 +118,17 @@ const CustomBar = (props) => {
             noWrap
             sx={{ flexGrow: 1 }}
           >
-            Eduturk Dashboard
+            Eduturk Dashboard - {user.name}
           </Typography>
+
+          <Button
+            onClick={handleOpen}
+            variant="outlined"
+            sx={{ mx: 1, textTransform: "none" }}
+            color="inherit"
+          >
+            Change Password - تغير كلمة المرور
+          </Button>
 
           <Button
             onClick={logout}
@@ -116,6 +138,7 @@ const CustomBar = (props) => {
           >
             تسجيل خروج - Logout
           </Button>
+
         </Toolbar>
 
       </AppBar>

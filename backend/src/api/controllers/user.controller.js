@@ -11,18 +11,20 @@ const sendMail = require('../services/sendMail');
  */
 exports.create = async (req, res, next) => {
   try {
-    let roleCheck = ['admin', 'agent', 'subagent'].filter(f => f === req.body.role).length
+    let roleCheck = ['Admin', 'Agent', 'SubAgent'].filter(f => f === req.body.role).length
 
     if (roleCheck < 1) {
-      throw roleErrors.ROLE_NOT_EXIST;
+      throw authErrors.ROLE_NOT_EXIST;
     }
     const password = Math.random()
       .toString(36)
       .slice(-8);
 
     req.body.password = password;
+    req.body.auto_generated_password = password;
+
     let user = await User.create({
-      ..._.pick(req.body, ['email', 'password', 'name', 'role', 'isActive', 'phone', 'country', 'company', 'logo']),
+      ..._.pick(req.body, ['email', 'password','auto_generated_password', 'name', 'role', 'isActive', 'phone', 'country', 'company', 'logo']),
     });
     user = user.dataValues;
     // sendMail(user.email, 'Welcome to Eduturk', 'invite-user', {
@@ -54,10 +56,10 @@ exports.update = async (req, res, next) => {
       throw authErrors.USER_NOT_FOUND;
     }
 
-    let roleCheck = ['admin', 'agent', 'subagent'].filter(f => f === user.role).length
+    let roleCheck = ['Admin', 'Agent', 'SubAgent'].filter(f => f === user.role).length
 
     if (roleCheck < 1) {
-      throw roleErrors.ROLE_NOT_EXIST;
+      throw authErrors.ROLE_NOT_EXIST;
     }
 
     user.name = req.body.name;
@@ -92,7 +94,10 @@ exports.list = async (req, res, next) => {
     const userRepo = new IRepo(User);
 
     const users = await userRepo.findAll();
-    return res.json(users);
+    return res.json({
+      success: true,
+      data: users
+    });
   } catch (e) {
     next(e);
   }

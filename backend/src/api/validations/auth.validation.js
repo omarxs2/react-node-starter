@@ -32,8 +32,8 @@ module.exports = {
 
   // POST /auth/reset-password
   resetPassword: [
-    body('oldPassword', 'Old password is required').exists(),
-    body('password', 'Password is required').exists(),
-    body('password', 'Passwords must be at least 6 chars long').isLength({ min: 4 }),
+    body('old_password', 'Old password is required').exists(),
+    body('new_password', 'Password is required').exists(),
+    body('new_password', 'Passwords must be at least 4 chars long').isLength({ min: 4 }),
   ],
 };

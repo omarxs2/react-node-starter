@@ -60,6 +60,10 @@ const User = sequelize.define(
         },
       },
     },
+    auto_generated_password: {
+      type: DataTypes.STRING,
+      defaultValue: '',
+    },
     role: {
       type: DataTypes.STRING,
       validate: {

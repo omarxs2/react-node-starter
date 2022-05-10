@@ -19,23 +19,23 @@ exports.list = async (req, res, next) => {
 
     let where = {};
 
-    if(department!=''){
+    if (department != '') {
       where = {
         ...where,
-        department_name_en: {
+        department_id: {
           [Op.eq]: department,
         },
       };
     }
-    if(university!=''){
+    if (university != '') {
       where = {
         ...where,
-        university: {
+        university_id: {
           [Op.eq]: university,
         },
       };
     }
-    if(language!=''){
+    if (language != '') {
       where = {
         ...where,
         language: {
@@ -45,7 +45,10 @@ exports.list = async (req, res, next) => {
     }
 
     const prices = await priceRepo.findAllByMultipleFields(where)
-    return res.json(prices);
+    return res.json({
+      success: true,
+      data: prices
+    });
   } catch (e) {
     next(e);
   }
@@ -61,14 +64,14 @@ exports.create = async (req, res, next) => {
   try {
 
     let price = await Price.create({
-      ..._.pick(req.body, ['department_name_en', 'department_name_ar',
-        'university', 'language',
-        'years', 'price_before', 'price_after']),
+      ..._.pick(req.body, ['department_id',
+        'university_id', 'language', 'years','degree',
+        'currency', 'price_before', 'price_after']),
     });
     price = price.dataValues;
     return res.json({
-        success: true
-      });
+      success: true
+    });
   } catch (e) {
     next(e);
   }
@@ -89,13 +92,14 @@ exports.update = async (req, res, next) => {
       throw authErrors.USNIVERSITY_NOT_FOUND;
     }
 
-    price.department_name_en = req.body.department_name_en;
-    price.department_name_ar = req.body.department_name_ar;
-    price.university = req.body.university;
+    price.department_id = req.body.department_id;
+    price.university_id = req.body.university_id;
     price.language = req.body.language;
-    price.years = req.body.years;
+    price.currency = req.body.currency;
     price.price_before = req.body.price_before;
     price.price_after = req.body.price_after;
+    price.years = req.body.years;
+    price.degree = req.body.degree;
 
     await priceRepo.updateOneByField(id, price);
     return res.json({

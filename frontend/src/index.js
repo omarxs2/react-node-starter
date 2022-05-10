@@ -7,9 +7,10 @@ import { Provider } from 'react-redux'
 import { BrowserRouter } from 'react-router-dom'
 import { ThemeProvider } from '@mui/material/styles';
 import { theme } from './configs/themeConfigs'
-
 import configureStore from './configureStore';
 import { PersistGate } from 'redux-persist/integration/react'
+import { AbilityContext } from './rules/Can'
+import ability from './rules/ability'
 
 
 const { store, persistor } = configureStore()
@@ -19,7 +20,11 @@ ReactDOM.render(
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <BrowserRouter>
-          <App />
+          <AbilityContext.Provider value={ability}>
+
+            <App />
+          </AbilityContext.Provider>
+
         </BrowserRouter>
       </PersistGate>
     </Provider>

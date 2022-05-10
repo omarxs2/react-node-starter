@@ -13,73 +13,29 @@ import Button from '@mui/material/Button';
 import FormDialog from './FormDialog'
 import Typography from '@mui/material/Typography';
 import SubjectIcon from '@mui/icons-material/Subject';
+import { useDispatch, useSelector } from 'react-redux';
+import { getDepartments } from '../store/departmentSlice';
 
 const columns = [
   { id: 'id', label: 'ID', minWidth: 200 },
-  { id: 'nameEN', label: 'Name EN', minWidth: 200 },
-  { id: 'nameAR', label: 'Name AR', minWidth: 200 },
-  { id: 'years', label: 'Years', minWidth: 200 },
-
+  { id: 'department_name_en', label: 'Name EN', minWidth: 200 },
+  { id: 'department_name_ar', label: 'Name AR', minWidth: 200 },
 ];
 
 
-const rows = [
-  {
-    id: 12,
-    nameEN: 'Computer Scince',
-    nameAR: 'علوم حاسوب',
-    years: '4 years'
-  },
-  {
-    id: 12,
-    nameEN: 'Computer Scince',
-    nameAR: 'علوم حاسوب',
-    years: '4 years'
-  },
-  {
-    id: 12,
-    nameEN: 'Computer Scince',
-    nameAR: 'علوم حاسوب',
-    years: '4 years'
-  },
-  {
-    id: 12,
-    nameEN: 'Computer Scince',
-    nameAR: 'علوم حاسوب',
-    years: '4 years'
-  },
-  {
-    id: 12,
-    nameEN: 'Computer Scince',
-    nameAR: 'علوم حاسوب',
-    years: '4 years'
-  },
-  {
-    id: 12,
-    nameEN: 'Computer Scince',
-    nameAR: 'علوم حاسوب',
-    years: '4 years'
-  },
-  {
-    id: 12,
-    nameEN: 'Computer Scince',
-    nameAR: 'علوم حاسوب',
-    years: '4 years'
-  },
-  {
-    id: 12,
-    nameEN: 'Computer Scince',
-    nameAR: 'علوم حاسوب',
-    years: '4 years'
-  },
-];
-
-export default function Agents() {
-
+export default function Departments() {
   const theme = useTheme();
+  const dispatch = useDispatch();
 
   const [openAddRecord, setOpenRecord] = React.useState(false);
   const [rowData, setRowData] = React.useState('');
+
+  const departments = useSelector((state) => state.app.departmentApp.departments)
+
+  React.useEffect(() => {
+    dispatch(getDepartments())
+  }, []);
+
 
   const handleClickOpen = () => {
     setOpenRecord(true);
@@ -87,6 +43,7 @@ export default function Agents() {
 
   const handleClose = () => {
     setOpenRecord(false);
+    setRowData('');
   };
 
   return (
@@ -136,9 +93,16 @@ export default function Agents() {
                     Add Department
                   </Button>
                 </Grid>
+                {departments &&
+                  <StickyHeadTable setRowData={setRowData}
+                    openDialopg={handleClickOpen}
+                    source='departments'
+                    columns={columns}
+                    rows={departments}
+                    rpp={departments.length}
+                  />
 
-                <StickyHeadTable setRowData={setRowData} openDialopg={handleClickOpen} source='departments' columns={columns} rows={rows} />
-
+                }
               </Grid>
             </Grid>
             <Copyright sx={{ pt: 4 }} />

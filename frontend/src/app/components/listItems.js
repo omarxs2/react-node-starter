@@ -3,7 +3,6 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import DashboardIcon from '@mui/icons-material/Dashboard';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import PeopleIcon from '@mui/icons-material/People';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import LayersIcon from '@mui/icons-material/Layers';
@@ -20,12 +19,12 @@ export const mainListItems = (
       </ListItemButton>
     </Link>
 
-    <Link href="/agents" underline="none" color={'black'}>
+    <Link href="/users" underline="none" color={'black'}>
       <ListItemButton>
         <ListItemIcon>
           <PeopleIcon />
         </ListItemIcon>
-        <ListItemText primary="Agents" />
+        <ListItemText primary="Users" />
       </ListItemButton>
     </Link>
 

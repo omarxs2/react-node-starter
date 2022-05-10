@@ -12,31 +12,39 @@ import StickyHeadTable from '../../components/StickyHeadTable'
 import Button from '@mui/material/Button';
 import FormDialog from './FormDialog'
 import Typography from '@mui/material/Typography';
-import SchoolIcon from '@mui/icons-material/School';
+import SupportAgentIcon from '@mui/icons-material/SupportAgent';
 import { useDispatch, useSelector } from 'react-redux';
-import { getUniversities } from '../store/universitySlice';
+import { getUsers } from '../store/userSlice';
 
 
 const columns = [
-  { id: 'id', label: 'ID', minWidth: 200 },
-  { id: 'university_name_en', label: 'Name EN', minWidth: 200 },
-  { id: 'university_name_ar', label: 'Name AR', minWidth: 200 },
-  { id: 'color', label: 'Tag Color', minWidth: 200 },
+  { id: 'name', label: 'Name', minWidth: 180 },
+  { id: 'email', label: 'Email', minWidth: 180 },
+  { id: 'phone', label: 'Phone', minWidth: 150 },
+  { id: 'role', label: 'Role', minWidth: 100 },
+  { id: 'country', label: 'Country', minWidth: 120 },
+  { id: 'company', label: 'Company', minWidth: 120 },
+  { id: 'isActive', label: 'status', minWidth: 100 },
+  { id: 'auto_generated_password', label: 'Generated Password', minWidth: 120 },
 ];
 
 
-export default function Universities() {
+
+export default function Users() {
   const theme = useTheme();
   const dispatch = useDispatch();
 
-  const [openAddRecord, setOpenRecord] = React.useState(false);
-  const [rowData, setRowData] = React.useState('');
-
-  const universities = useSelector((state) => state.app.universityApp.universities)
+  const users = useSelector((state) => state.app.userApp.users)
 
   React.useEffect(() => {
-    dispatch(getUniversities())
+    dispatch(getUsers())
   }, []);
+
+
+  const [rowData, setRowData] = React.useState('');
+
+
+  const [openAddRecord, setOpenRecord] = React.useState(false);
 
   const handleClickOpen = () => {
     setOpenRecord(true);
@@ -83,25 +91,20 @@ export default function Universities() {
                     noWrap
                     sx={{ flexGrow: 1 }}
                   >
-                    Universities
+                    Users
                   </Typography>
+
                   <Button
                     onClick={handleClickOpen}
                     sx={{ m: 1, minWidth: 120 }}
                     variant="contained"
-                    startIcon={<SchoolIcon />}>
-                    Add University
+                    startIcon={<SupportAgentIcon />}>
+                    Add User
                   </Button>
                 </Grid>
-
-                {universities && <StickyHeadTable
-                  setRowData={setRowData}
-                  openDialopg={handleClickOpen}
-                  source='universities'
-                  columns={columns}
-                  rows={universities}
-                  rpp={universities.length}
-                />
+                {users &&
+                  <StickyHeadTable setRowData={setRowData} openDialopg={handleClickOpen}
+                    source='users' columns={columns} rows={users} />
                 }
               </Grid>
             </Grid>
