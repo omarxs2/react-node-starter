@@ -9,12 +9,19 @@ import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import { mainListItems } from './listItems';
 import Avatar from '@mui/material/Avatar';
 import Button from "@mui/material/Button";
 import { deleteToken } from "../../auth/store/loginSlice";
 import { useDispatch, useSelector } from 'react-redux';
 import CustomDialog from './CustomDialog';
+import ListItem from '@mui/material/ListItem';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import PeopleIcon from '@mui/icons-material/People';
+import BarChartIcon from '@mui/icons-material/BarChart';
+import LayersIcon from '@mui/icons-material/Layers';
+import { useHistory } from "react-router-dom";
 
 const drawerWidth = 240;
 
@@ -67,10 +74,15 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 const CustomBar = (props) => {
   const dispatch = useDispatch();
+  let history = useHistory();
+
   const user = useSelector((state) => state.auth.loginApp.user)
 
   const [open, setOpen] = React.useState(false);
   const [openDialog, setOpenDialog] = React.useState(false);
+  const [pages, setPages] = React.useState(user.role === 'Admin' ? ['Dashboard', 'Users', 'Universities', 'Departments'] : ['Dashboard']);
+
+
 
   const toggleDrawer = () => {
     setOpen(!open);
@@ -159,7 +171,29 @@ const CustomBar = (props) => {
 
         <Divider />
         <List component="nav">
-          {mainListItems}
+
+
+          <List>
+            {pages.map((text, index) => (
+              <ListItem
+                onClick={() => {
+                  index === 0 ? history.push("/app") :
+                    index === 1 ? history.push("/users") :
+                      index === 2 ? history.push("/universities") :
+                        history.push("/departments")
+                }}
+                button key={text}>
+                <ListItemIcon>
+                  {index === 0 ? <DashboardIcon /> :
+                    index === 1 ? <PeopleIcon /> :
+                      index === 2 ? <BarChartIcon /> :
+                        <LayersIcon />}
+                </ListItemIcon>
+                <ListItemText primary={text} />
+              </ListItem>
+            ))}
+          </List>
+
         </List>
       </Drawer>
     </>

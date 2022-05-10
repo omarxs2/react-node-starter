@@ -16,6 +16,8 @@ import { submitLogin } from './store/loginSlice';
 import Alert from '@mui/material/Alert';
 import Stack from '@mui/material/Stack';
 import LinearProgress from '@mui/material/LinearProgress';
+import { useHistory } from "react-router-dom";
+import { useSelector } from 'react-redux'
 
 
 function Copyright(props) {
@@ -33,10 +35,18 @@ function Copyright(props) {
 
 export default function Login(props) {
     const theme = useTheme()
+    let history = useHistory();
     const dispatch = useDispatch();
 
     const [error, setError] = React.useState(false);
     const [loading, setLoading] = React.useState(false);
+    const token = useSelector((state) => state.auth.loginApp.token)
+
+    React.useEffect(() => {
+        if (token != null) {
+          history.push("/app");
+        }
+      }, []);
 
     const handleSubmit = (event) => {
         setLoading(true);
@@ -50,6 +60,8 @@ export default function Login(props) {
             setLoading(false);
             if (res) {
                 setError(false)
+                history.push("/app");
+
             } else {
                 setError(true)
             }
@@ -116,7 +128,7 @@ export default function Login(props) {
                             <Grid >
                                 {error &&
 
-                                    <Stack  spacing={2}>
+                                    <Stack spacing={2}>
                                         <Alert sx={{ m: 1, minWidth: 250 }}
                                             severity="error"
                                             onClose={() => { setError(false) }}>
@@ -126,7 +138,7 @@ export default function Login(props) {
                                 }
                                 {
                                     loading &&
-                                    <Stack  spacing={2}>
+                                    <Stack spacing={2}>
                                         <LinearProgress sx={{ m: 1, minWidth: 250 }} />
                                     </Stack>
                                 }

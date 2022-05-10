@@ -1,61 +1,91 @@
-import React from "react";
-import { Route, Routes, Navigate } from "react-router-dom";
-import Login from "./auth/Login";
-import SignUp from "./auth/SignUp";
-import Dashboard from './app/views/dashboard/Dashboard';
-import Users from './app/views/users/Users';
-import Universities from './app/views/universities/Universities';
-import Departments from './app/views/departments/Departments';
-import ApplyNow from "./pages/apply/ApplyNow";
+import React, { Suspense } from "react";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  Redirect
+} from "react-router-dom";
 import { useSelector } from 'react-redux'
+import Loading from "./app/components/Loading";
+import CustomBar from "./app/components/CustomBar";
+import { ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import Box from '@mui/material/Box';
+import { useTheme } from "@emotion/react";
+import Toolbar from '@mui/material/Toolbar';
+
+
+//auth pages
+const Login = React.lazy(() => import("./auth/Login"));
+const SignUp = React.lazy(() => import("./auth/SignUp"));
+//app pages
+const Dashboard = React.lazy(() => import("./app/views/dashboard/Dashboard"));
+const Users = React.lazy(() => import("./app/views/users/Users"));
+const Universities = React.lazy(() => import("./app/views/universities/Universities"));
+const Departments = React.lazy(() => import("./app/views/departments/Departments"));
+//public pages
+const ApplyNow = React.lazy(() => import("./pages/apply/ApplyNow"));
+const NotFound = React.lazy(() => import("./pages/NotFound"));
+
+
 
 function App() {
+  const theme = useTheme();
+
   const token = useSelector((state) => state.auth.loginApp.token)
+  const role = useSelector((state) => state.auth.loginApp.user.role)
 
   return (
-    <Routes>
-      {!token && (
-        <>
-          <Route
-            path="/login"
-            element={<Login />}
-          />
-          <Route
-            path="/signup"
-            element={<SignUp />}
-          />
-          <Route
-            path="/apply"
-            element={<ApplyNow />}
-          />
-        </>
-      )}
-
-      {token && (
-        <>
-          <Route
-            path="/app"
-            element={<Dashboard />}
-          />
-          <Route
-            path="/users"
-            element={<Users />}
-          />
-          <Route
-            path="/universities"
-            element={<Universities />}
-          />
-          <Route
-            path="/departments"
-            element={<Departments />}
-          />
-
-        </>
-
-      )}
-          <Route path="*" element={<Navigate to={token ? "/app" : "/login"} />} />
-
-    </Routes>
+    <Router>
+      <Suspense fallback={<Loading />}>
+        <Switch>
+          <Route path="/login" component={Login} />
+          <Route path="/signup" component={SignUp} />
+          <Route path="/apply" component={ApplyNow} />
+          {
+            token && (
+              <ThemeProvider theme={theme}>
+                <Box sx={{ display: 'flex' }}>
+                  <CssBaseline />
+                  <CustomBar />
+                  <Box
+                    component="main"
+                    sx={{
+                      backgroundColor: (theme) =>
+                        theme.palette.mode === 'light'
+                          ? theme.palette.grey[100]
+                          : theme.palette.grey[900],
+                      flexGrow: 1,
+                      height: '100vh',
+                      overflow: 'auto',
+                    }}
+                  >
+                    <Toolbar />
+                    <Switch>
+                      <Route path="/app" component={Dashboard} />
+                      {
+                        role === 'Admin' && (
+                          <Switch>
+                            <Route path="/users" component={Users} />
+                            <Route path="/universities" component={Universities} />
+                            <Route path="/departments" component={Departments} />
+                            <Route path='/*' render={() => <Redirect to='/app' />} />
+                          </Switch>
+                        )
+                      }
+                      <Route path='/*' render={() => <Redirect to='/app' />} />
+                      {/* <Route exact component={NotFound} /> */}
+                    </Switch>
+                  </Box>
+                </Box>
+              </ThemeProvider>
+            )
+          }
+          <Route path='/*' render={() => <Redirect to={token ? '/app' : '/login'} />} />
+        </Switch>
+      </Suspense>
+    </Router>
   );
 }
 

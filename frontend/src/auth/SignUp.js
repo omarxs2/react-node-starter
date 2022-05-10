@@ -13,6 +13,8 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { ThemeProvider } from '@mui/material/styles';
 import { useTheme } from '@mui/material/styles'
+import { useHistory } from "react-router-dom";
+import { useSelector } from 'react-redux'
 
 function Copyright(props) {
   return (
@@ -30,7 +32,14 @@ function Copyright(props) {
 
 export default function SignUp() {
     const theme = useTheme();
+    let history = useHistory();
+    const token = useSelector((state) => state.auth.loginApp.token)
 
+    React.useEffect(() => {
+        if (token != null) {
+          history.push("/app");
+        }
+      }, []);
   const handleSubmit = (event) => {
     event.preventDefault();
   };
