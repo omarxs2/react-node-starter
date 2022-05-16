@@ -94,7 +94,6 @@ export default function PreferenceForm(props) {
   const handleChange = () => {
   };
   const handleDocChange = (e) => {
-    console.log(e.target.value)
     setDocType(e.target.value)
 
 
@@ -105,8 +104,7 @@ export default function PreferenceForm(props) {
     const fileReader = new FileReader();
 
     fileReader.readAsDataURL(target.files[0]);
-    console.log(target.files[0])
-    target.files[0].myType = docType
+    target.files[0].documentType = docType
     setFiles([...files, target.files[0]]);
 
     let temp = docs
@@ -216,7 +214,7 @@ export default function PreferenceForm(props) {
             onChange={handleDocChange}
           >
             {
-              docs.filter(doc => !doc.uploaded).map(doc => (
+              docs.map(doc => (
                 <MenuItem key={doc.label} value={doc.label}>
                   {doc.label}
                 </MenuItem>
@@ -257,7 +255,7 @@ export default function PreferenceForm(props) {
                       </Avatar>
                     </ListItemAvatar>
                     <ListItemText
-                      primary={file.myType}
+                      primary={file.documentType}
                       secondary={file.name}
                     />
                   </ListItem>

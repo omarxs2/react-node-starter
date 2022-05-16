@@ -42,7 +42,7 @@ export default function Dashboard() {
 
 
   React.useEffect(() => {
-    dispatch(getPrices({ department: '', language: '', university: '' }));
+    dispatch(getPrices({ department: '', language: '', university: '', degree: '' }));
     dispatch(getDepartments());
     dispatch(getUniversities());
   }, []);
@@ -104,154 +104,154 @@ export default function Dashboard() {
   };
 
   return (
- 
-      <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-        <Grid container spacing={3}>
-          <Box component="form" onSubmit={handleSearch} sx={{ mt: 1 }}>
-            <Grid item xs={12}>
 
+    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+      <Grid container spacing={3}>
+        <Box component="form" onSubmit={handleSearch} sx={{ mt: 1 }}>
+          <Grid item xs={12}>
+
+
+            <Grid
+              container
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <FormDialog rowData={rowData} open={openAddRecord} handleClose={() => handleClose()} />
 
               <Grid
                 container
                 direction="row"
-                justifyContent="space-between"
+                justifyContent="center"
                 alignItems="center"
               >
-                <FormDialog rowData={rowData} open={openAddRecord} handleClose={() => handleClose()} />
-
-                <Grid
-                  container
-                  direction="row"
-                  justifyContent="center"
-                  alignItems="center"
+                <TextField
+                  select
+                  size='small'
+                  label="Department"
+                  name='department'
+                  sx={{ m: 1, minWidth: 180, maxWidth: 250 }}
+                  // onChange={(e) => handleChange(e, 'department')}
+                  defaultValue={'All Departments'}
                 >
-                  <TextField
-                    select
-                    size='small'
-                    label="Department"
-                    name='department'
-                    sx={{ m: 1, minWidth: 180, maxWidth: 250 }}
-                    onChange={(e) => handleChange(e, 'department')}
-                    defaultValue={'All Departments'}
-                  >
-                    <MenuItem key={'init'} value={'All Departments'}>
-                      All Departments
+                  <MenuItem key={'init'} value={'All Departments'}>
+                    All Departments
+                  </MenuItem>
+                  {departments.map((option) => (
+                    <MenuItem key={option.id} value={option.id}>
+                      {option.department_name_en} - {option.department_name_ar}
                     </MenuItem>
-                    {departments.map((option) => (
-                      <MenuItem key={option.id} value={option.id}>
-                        {option.department_name_en} - {option.department_name_ar}
-                      </MenuItem>
-                    ))}
-                  </TextField>
+                  ))}
+                </TextField>
 
-                  <TextField
-                    size='small'
-                    sx={{ m: 1, minWidth: 180, maxWidth: 250 }}
-                    select
-                    label="Language"
-                    name='language'
-                    onChange={(e) => handleChange(e, 'language')}
-                    defaultValue={'All Languages'}
-                  >
-                    <MenuItem key={'init'} value={'All Languages'}>
-                      All Languages
-                    </MenuItem>
-                    <MenuItem key={10} value={'English'}>
-                      English
-                    </MenuItem>
-                    <MenuItem key={20} value={'Turkish'}>
-                      Turkish
-                    </MenuItem>
-                    <MenuItem key={30} value={'Other'}>
-                      Other
-                    </MenuItem>
-                  </TextField>
-
-
-                  <TextField
-                    select
-                    size='small'
-                    label="University"
-                    name='university'
-                    sx={{ m: 1, minWidth: 180, maxWidth: 250 }}
-                    onChange={(e) => handleChange(e, 'university')}
-                    defaultValue={'All Universities'}
-
-                  >
-                    <MenuItem key={'init'} value={'All Universities'}>
-                      All Universities
-                    </MenuItem>
-                    {universities.map((option) => (
-                      <MenuItem key={option.id} value={option.id}>
-                        {option.university_name_en} - {option.university_name_en}
-                      </MenuItem>
-                    ))}
-                  </TextField>
-
-                  <TextField
-                    size='small'
-                    sx={{ m: 1, minWidth: 180, maxWidth: 250 }}
-                    name="degree"
-                    select
-                    label="Degree"
-                    defaultValue={'All Degrees'}
-                    onChange={(e) => handleChange(e, 'degree')}
-                  >
-                    <MenuItem key={'init'} value={'All Degrees'}>
-                      All Degrees
-                    </MenuItem>
-                    <MenuItem key={10} value={'Associate'}>
-                      Associate
-                    </MenuItem>
-                    <MenuItem key={10} value={'Bachelor'}>
-                      Bachelor
-                    </MenuItem>
-                    <MenuItem key={10} value={'Master'}>
-                      Master
-                    </MenuItem>
-                    <MenuItem key={10} value={'PhD'}>
-                      PhD
-                    </MenuItem>
-                  </TextField>
-
-                  <Button type='submit' sx={{ m: 1, minWidth: 120 }} variant="outlined" startIcon={<ManageSearchRoundedIcon />}>
-                    Search
-                  </Button>
-                  <Button onClick={downlaodData} sx={{ m: 1, minWidth: 120 }} variant="contained" startIcon={<DownloadForOfflineIcon />}>
-                    Download
-                  </Button>
-
-
-                </Grid>
-                <Grid
-                  container
-                  direction="row"
-                  justifyContent="center"
-                  alignItems="center"
+                <TextField
+                  size='small'
+                  sx={{ m: 1, minWidth: 180, maxWidth: 250 }}
+                  select
+                  label="Language"
+                  name='language'
+                  // onChange={(e) => handleChange(e, 'language')}
+                  defaultValue={'All Languages'}
                 >
-                  <Can I="add" a="Record">
-                    <Button onClick={handleClickOpen} sx={{ m: 1, minWidth: 120 }} variant="contained" startIcon={<AddCircleIcon />}>
-                      Add Record
-                    </Button>
-                  </Can>
+                  <MenuItem key={'init'} value={'All Languages'}>
+                    All Languages
+                  </MenuItem>
+                  <MenuItem key={'English'} value={'English'}>
+                    English
+                  </MenuItem>
+                  <MenuItem key={'Turkish'} value={'Turkish'}>
+                    Turkish
+                  </MenuItem>
+                  <MenuItem key={'Other'} value={'Other'}>
+                    Other
+                  </MenuItem>
+                </TextField>
 
 
-                </Grid>
+                <TextField
+                  select
+                  size='small'
+                  label="University"
+                  name='university'
+                  sx={{ m: 1, minWidth: 180, maxWidth: 250 }}
+                  // onChange={(e) => handleChange(e, 'university')}
+                  defaultValue={'All Universities'}
+
+                >
+                  <MenuItem key={'init'} value={'All Universities'}>
+                    All Universities
+                  </MenuItem>
+                  {universities.map((option) => (
+                    <MenuItem key={option.id} value={option.id}>
+                      {option.university_name_en} - {option.university_name_en}
+                    </MenuItem>
+                  ))}
+                </TextField>
+
+                <TextField
+                  size='small'
+                  sx={{ m: 1, minWidth: 180, maxWidth: 250 }}
+                  name="degree"
+                  select
+                  label="Degree"
+                  defaultValue={'All Degrees'}
+                // onChange={(e) => handleChange(e, 'degree')}
+                >
+                  <MenuItem key={'init'} value={'All Degrees'}>
+                    All Degrees
+                  </MenuItem>
+                  <MenuItem key={10} value={'Associate'}>
+                    Associate
+                  </MenuItem>
+                  <MenuItem key={10} value={'Bachelor'}>
+                    Bachelor
+                  </MenuItem>
+                  <MenuItem key={10} value={'Master'}>
+                    Master
+                  </MenuItem>
+                  <MenuItem key={10} value={'PhD'}>
+                    PhD
+                  </MenuItem>
+                </TextField>
+
+                <Button type='submit' sx={{ m: 1, minWidth: 120 }} variant="outlined" startIcon={<ManageSearchRoundedIcon />}>
+                  Search
+                </Button>
+                <Button onClick={downlaodData} sx={{ m: 1, minWidth: 120 }} variant="contained" startIcon={<DownloadForOfflineIcon />}>
+                  Download
+                </Button>
+
+
               </Grid>
+              <Grid
+                container
+                direction="row"
+                justifyContent="center"
+                alignItems="center"
+              >
+                <Can I="add" a="Record">
+                  <Button onClick={handleClickOpen} sx={{ m: 1, minWidth: 120 }} variant="contained" startIcon={<AddCircleIcon />}>
+                    Add Record
+                  </Button>
+                </Can>
 
-              <StickyHeadTable
-                departments={departments}
-                universities={universities}
-                setRowData={setRowData}
-                openDialopg={handleClickOpen}
-                source='dashboard'
-                columns={columns}
-                rows={prices} />
 
+              </Grid>
             </Grid>
-          </Box>
-        </Grid>
-        <Copyright sx={{ pt: 4 }} />
-      </Container>
+
+            <StickyHeadTable
+              departments={departments}
+              universities={universities}
+              setRowData={setRowData}
+              openDialopg={handleClickOpen}
+              source='dashboard'
+              columns={columns}
+              rows={prices} />
+
+          </Grid>
+        </Box>
+      </Grid>
+      <Copyright sx={{ pt: 4 }} />
+    </Container>
   );
 }

@@ -16,15 +16,6 @@ const File = sequelize.define('File', {
       },
     },
   },
-  userId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    validate: {
-      notNull: {
-        msg: 'userId is required',
-      },
-    },
-  },
   sizeKB: {
     type: DataTypes.INTEGER,
     allowNull: false,

@@ -24,6 +24,8 @@ const Dashboard = React.lazy(() => import("./app/views/dashboard/Dashboard"));
 const Users = React.lazy(() => import("./app/views/users/Users"));
 const Universities = React.lazy(() => import("./app/views/universities/Universities"));
 const Departments = React.lazy(() => import("./app/views/departments/Departments"));
+const Apply = React.lazy(() => import("./app/views/apply-now/ApplyNow"));
+
 //public pages
 const ApplyNow = React.lazy(() => import("./pages/apply/ApplyNow"));
 const NotFound = React.lazy(() => import("./pages/NotFound"));
@@ -33,8 +35,8 @@ const NotFound = React.lazy(() => import("./pages/NotFound"));
 function App() {
   const theme = useTheme();
 
-  const token = useSelector((state) => state.auth.loginApp.token)
-  const role = useSelector((state) => state.auth.loginApp.user.role)
+  const token = useSelector((state) => state.auth?.loginApp?.token) || null;
+  const role = useSelector((state) => state.auth?.loginApp?.user?.role) || null;
 
   return (
     <Router>
@@ -64,6 +66,8 @@ function App() {
                     <Toolbar />
                     <Switch>
                       <Route path="/app" component={Dashboard} />
+                      <Route path="/apply-now" component={Apply} />
+
                       {
                         role === 'Admin' && (
                           <Switch>

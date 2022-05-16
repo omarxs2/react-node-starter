@@ -22,7 +22,7 @@ import PeopleIcon from '@mui/icons-material/People';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import LayersIcon from '@mui/icons-material/Layers';
 import { useHistory } from "react-router-dom";
-
+import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
 const drawerWidth = 240;
 
 
@@ -80,7 +80,7 @@ const CustomBar = (props) => {
 
   const [open, setOpen] = React.useState(false);
   const [openDialog, setOpenDialog] = React.useState(false);
-  const [pages, setPages] = React.useState(user.role === 'Admin' ? ['Dashboard', 'Users', 'Universities', 'Departments'] : ['Dashboard']);
+  const [pages, setPages] = React.useState(user.role === 'Admin' ? ['Dashboard', 'Apply','Users', 'Universities', 'Departments'] : ['Dashboard','Apply']);
 
 
 
@@ -172,21 +172,24 @@ const CustomBar = (props) => {
         <Divider />
         <List component="nav">
 
+ {/* ['Dashboard', 'Users', 'Universities', 'Departments'] : ['Dashboard','Apply']); */}
 
           <List>
             {pages.map((text, index) => (
               <ListItem
                 onClick={() => {
-                  index === 0 ? history.push("/app") :
-                    index === 1 ? history.push("/users") :
-                      index === 2 ? history.push("/universities") :
+                  text === 'Dashboard' ? history.push("/app") :
+                  text === 'Users' ? history.push("/users") :
+                  text === 'Universities' ? history.push("/universities") :
+                  text === 'Apply' ? history.push("/apply-now") :
                         history.push("/departments")
                 }}
                 button key={text}>
                 <ListItemIcon>
-                  {index === 0 ? <DashboardIcon /> :
-                    index === 1 ? <PeopleIcon /> :
-                      index === 2 ? <BarChartIcon /> :
+                  {text === 'Dashboard' ? <DashboardIcon /> :
+                    text === 'Users' ? <PeopleIcon /> :
+                    text === 'Universities' ? <BarChartIcon /> :
+                    text === 'Apply' ? <AppRegistrationIcon /> :
                         <LayersIcon />}
                 </ListItemIcon>
                 <ListItemText primary={text} />

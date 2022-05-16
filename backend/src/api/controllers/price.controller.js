@@ -16,6 +16,7 @@ exports.list = async (req, res, next) => {
     const department = req.query.department || '';
     const university = req.query.university || '';
     const language = req.query.language || '';
+    const degree = req.query.degree || '';
 
     let where = {};
 
@@ -40,6 +41,14 @@ exports.list = async (req, res, next) => {
         ...where,
         language: {
           [Op.eq]: language,
+        },
+      };
+    }
+    if (degree != '') {
+      where = {
+        ...where,
+        degree: {
+          [Op.eq]: degree,
         },
       };
     }

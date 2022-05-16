@@ -16,10 +16,10 @@ exports.post = async (req, res, next) => {
         sizeKB: req.file.size,
         path: req.file.filename,
         contentType: req.file.mimetype,
-        userId: req.user.id,
         uploadDate: currentDate(),
       });
       return res.status(200).json({
+        success: true,
         path: file.dataValues.path,
       });
     }

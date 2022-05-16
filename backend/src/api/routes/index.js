@@ -6,6 +6,7 @@ const universityRoutes = require('./university.route');
 const departmentRoutes = require('./department.route');
 const priceRoutes = require('./price.route');
 const fileRoutes = require('./file.route');
+const applicationRoutes = require('./application.route');
 
 const router = express.Router();
 
@@ -14,6 +15,7 @@ router.use('/user', authenticate('admin'), userRoutes);
 router.use('/university', authenticate('admin'), universityRoutes);
 router.use('/department', authenticate('admin'), departmentRoutes);
 router.use('/price', authenticate('admin'), priceRoutes);
+router.use('/application', applicationRoutes);
 router.use('/file', fileRoutes);
 
 module.exports = router;

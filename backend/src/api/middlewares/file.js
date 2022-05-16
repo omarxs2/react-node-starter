@@ -10,16 +10,7 @@ const isAllowedMimetype = (mime) => [
   'image/gif',
   'image/x-ms-bmp',
   'image/webp',
-  'video/mp4',
-  'video/x-msvideo',
-  'video/mpeg',
-  'video/webm',
-  'audio/aac',
-  'audio/mpeg',
-  'audio/opus',
-  'audio/wav',
-  'audio/mp4',
-  'audio/oog',
+  'application/pdf'
 ].includes(mime.toString());
 
 const fileFilter = (req, file, cb) => {

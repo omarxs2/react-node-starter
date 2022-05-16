@@ -40,7 +40,7 @@ export default function Login(props) {
 
     const [error, setError] = React.useState(false);
     const [loading, setLoading] = React.useState(false);
-    const token = useSelector((state) => state.auth.loginApp.token)
+    const token = useSelector((state) => state.auth?.loginApp?.token)|| null;
 
     React.useEffect(() => {
         if (token != null) {
