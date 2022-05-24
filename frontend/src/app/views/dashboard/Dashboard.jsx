@@ -1,63 +1,198 @@
 import * as React from 'react';
-import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import { useTheme } from "@emotion/react";
 import Copyright from '../../components/Copyright'
-import StickyHeadTable from '../../components/StickyHeadTable'
-import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
 import ManageSearchRoundedIcon from '@mui/icons-material/ManageSearchRounded';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
-import DownloadForOfflineIcon from '@mui/icons-material/DownloadForOffline';
 import FormDialog from './FormDialog'
-import jsPDF from 'jspdf'
-import 'jspdf-autotable'
 import { useDispatch, useSelector } from 'react-redux';
 import { getPrices } from '../store/dashboardSlice';
 import { getUniversities } from '../store/universitySlice';
 import { getDepartments } from '../store/departmentSlice';
 import TextField from '@mui/material/TextField';
 import { Can } from '../../../rules/Can';
+import {
+  DataGrid,
+  gridSortedRowIdsSelector,
+  GridToolbarContainer,
+  useGridApiContext,
+  GridToolbarDensitySelector,
+  GridToolbarFilterButton,
+  GridToolbarColumnsButton,
+  GridToolbarExport
 
-const columns = [
-  { id: 'department_en', label: 'Department EN', minWidth: 200 },
-  { id: 'department_ar', label: 'Department AR', minWidth: 200 },
-  { id: 'university', label: 'University', minWidth: 200 },
-  { id: 'language', label: 'Language', minWidth: 120 },
-  { id: 'degree', label: 'Degree', minWidth: 120 },
-  { id: 'years', label: 'Yesrs', minWidth: 120 },
-  { id: 'price_before', label: 'Price Befor', minWidth: 155 },
-  { id: 'price_after', label: 'Price After', minWidth: 155 },
-];
+} from '@mui/x-data-grid';
+import Chip from '@mui/material/Chip';
+import Paper from '@mui/material/Paper';
+import Autocomplete from '@mui/material/Autocomplete';
+import { createSvgIcon } from '@mui/material/utils';
 
+
+const getUnfilteredRows = ({ apiRef }) => gridSortedRowIdsSelector(apiRef);
+const ExportIcon = createSvgIcon(
+  <path d="M19 12v7H5v-7H3v7c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7h-2zm-6 .67l2.59-2.58L17 11.5l-5 5-5-5 1.41-1.41L11 12.67V3h2z" />,
+  'SaveAlt',
+);
+
+const CustomToolbar = () => {
+  const apiRef = useGridApiContext();
+
+  const handleExport = (options) => apiRef.current.exportDataAsCsv(options);
+
+  const buttonBaseProps = {
+    color: 'primary',
+    size: 'small',
+    startIcon: <ExportIcon />,
+  };
+
+  return (
+    <GridToolbarContainer>
+      <GridToolbarColumnsButton />
+      <GridToolbarFilterButton />
+      <GridToolbarDensitySelector />
+      <GridToolbarExport
+        printOptions={{
+          hideFooter: true,
+          hideToolbar: true,
+          pageStyle: '.MuiDataGrid-root .MuiDataGrid-main { color: rgba(0, 0, 0, 0.87); }',
+
+        }} />
+      <Button
+        {...buttonBaseProps}
+        onClick={() => handleExport({ getRowsToExport: getUnfilteredRows })}
+      >
+        Export All
+      </Button>
+    </GridToolbarContainer>
+  );
+};
+
+
+const languages = [
+  { label: 'English' },
+  { label: 'Turkish' },
+  { label: 'Other' }
+]
+
+const degrees = [
+  { label: 'Associate' },
+  { label: 'Bachelor' },
+  { label: 'Master' },
+  { label: 'PhD' }
+]
 
 export default function Dashboard() {
   const theme = useTheme();
   const dispatch = useDispatch();
 
   const prices = useSelector((state) => state.app.dashboardApp.prices)
+  const count = useSelector((state) => state.app.dashboardApp.count)
   const departments = useSelector((state) => state.app.departmentApp.departments)
   const universities = useSelector((state) => state.app.universityApp.universities)
 
 
+  const myColumns = [
+    {
+      field: 'department_id',
+      filterable: false,
+      headerName: 'Department EN',
+      flex: 1,
+      minWidth: 300,
+      renderCell: (params) => {
+        let department = departments.filter(r => r.id === params.value)[0] || null;
+        return `${department.department_name_en} - ${department.department_name_ar}`;
+      }
+
+    },
+    {
+      field: 'university_id',
+      headerName: 'University',
+      flex: 1,
+      minWidth: 200,
+      filterable: false,
+      renderCell: (params) => {
+        let university = universities.filter(r => r.id === params.value)[0] || null;
+        return (
+          <Chip label={university.university_name_en}
+            sx={{ backgroundColor: university.color || '', color: 'white' }}
+            variant="filled" />
+        )
+
+      }
+    },
+
+    { field: 'degree', filterable: false, headerName: 'Degree', flex: 1, minWidth: 100 },
+    { field: 'language', filterable: false, headerName: 'Language', flex: 1, minWidth: 100 },
+    {
+      field: 'years', headerName: 'Years', flex: 1, minWidth: 100,
+      renderCell: (params) => {
+        return `${params.value} Years`;
+      }
+    },
+    {
+      field: 'price_before', headerName: 'Price Befor', flex: 1, minWidth: 120,
+      renderCell: (params) => {
+        if (params.row.currency === 'usd') return `${params.value}$`;
+        else return `${params.value}TL`;
+      }
+    },
+    {
+      field: 'price_after', headerName: 'Price After', flex: 1, minWidth: 120,
+      renderCell: (params) => {
+        if (params.row.currency === 'usd') return `${params.value}$`;
+        else return `${params.value}TL`;
+      }
+    },
+  ];
+
   React.useEffect(() => {
-    dispatch(getPrices({ department: '', language: '', university: '', degree: '' }));
+    dispatch(getPrices({ department: '', language: '', university: '', degree: '' }, 0));
     dispatch(getDepartments());
     dispatch(getUniversities());
   }, []);
 
-  const [rowData, setRowData] = React.useState('');
-
-  const handleChange = (event, type) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    let value = event.target.value
-    data.set(type, value);
-  };
-
 
   const [openAddRecord, setOpenRecord] = React.useState(false);
+  const [rowData, setRowData] = React.useState('');
+  const [page, setPage] = React.useState(0);
+  const [loading, setLoading] = React.useState(false);
+  const [department, setDep] = React.useState('');
+  const [language, setLan] = React.useState('');
+  const [university, setUni] = React.useState('');
+  const [degree, setDeg] = React.useState('');
+
+
+
+
+  const handleNextPage = (newPage) => {
+    if (newPage < page) {
+      setPage(newPage);
+    }
+    else {
+      setPage(newPage);
+      if (prices.length / 50 < newPage || prices.length / 50 === newPage) {
+        setLoading(true);
+        dispatch(getPrices(
+          {
+            department: department?.id || '',
+            language: language?.label || '',
+            university: university?.id || '',
+            degree: degree?.label || ''
+          }
+          ,
+          newPage
+        )).then(res => {
+          if (res) {
+            setLoading(false);
+
+          }
+        });
+      }
+    }
+
+  };
 
   const handleClickOpen = () => {
     setOpenRecord(true);
@@ -68,188 +203,173 @@ export default function Dashboard() {
     setRowData('');
   };
 
-  const handleSearch = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    dispatch(getPrices({
-      department: data.get('department').startsWith('All') ? '' : data.get('department'),
-      language: data.get('language').startsWith('All') ? '' : data.get('language'),
-      university: data.get('university').startsWith('All') ? '' : data.get('university'),
-      degree: data.get('degree').startsWith('All') ? '' : data.get('degree')
-    }));
+  const handleSearch = () => {
+    dispatch(getPrices(
+      {
+        department: department?.id || '',
+        language: language.label || '',
+        university: university?.id || '',
+        degree: degree.label || ''
+      }
+      ,
+      0));
   };
 
-  const downlaodData = () => {
-    // const doc = new jsPDF({ filters: ['ASCIIHexEncode'] })
-    // doc.text(rows[0].dep1, 10, 10)
-    // let labels = []
-    // columns.map(c => {
-    //   if (c.id !== 'dep2') {
-    //     labels.push(c.label)
-    //   }
-    // })
-    // let data = []
-    // rows.map(r => {
-    //   delete r.dep2
-    //   data.push(Object.values(r))
-    // })
-
-
-    // doc.autoTable({
-    //   head: [labels],
-    //   body: data,
-    //   bodyStyles: { font: "Amiri" }
-    // })
-    // doc.save('price.pdf')
-  };
 
   return (
 
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
       <Grid container spacing={3}>
-        <Box component="form" onSubmit={handleSearch} sx={{ mt: 1 }}>
-          <Grid item xs={12}>
+        <Grid item xs={12}>
 
+
+          <Grid
+            container
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <FormDialog rowData={rowData} open={openAddRecord} handleClose={() => handleClose()} />
 
             <Grid
               container
               direction="row"
-              justifyContent="space-between"
+              justifyContent="center"
               alignItems="center"
             >
-              <FormDialog rowData={rowData} open={openAddRecord} handleClose={() => handleClose()} />
-
-              <Grid
-                container
-                direction="row"
-                justifyContent="center"
-                alignItems="center"
-              >
-                <TextField
-                  select
-                  size='small'
-                  label="Department"
-                  name='department'
-                  sx={{ m: 1, minWidth: 180, maxWidth: 250 }}
-                  // onChange={(e) => handleChange(e, 'department')}
-                  defaultValue={'All Departments'}
-                >
-                  <MenuItem key={'init'} value={'All Departments'}>
-                    All Departments
-                  </MenuItem>
-                  {departments.map((option) => (
-                    <MenuItem key={option.id} value={option.id}>
-                      {option.department_name_en} - {option.department_name_ar}
-                    </MenuItem>
-                  ))}
-                </TextField>
-
-                <TextField
-                  size='small'
-                  sx={{ m: 1, minWidth: 180, maxWidth: 250 }}
-                  select
-                  label="Language"
-                  name='language'
-                  // onChange={(e) => handleChange(e, 'language')}
-                  defaultValue={'All Languages'}
-                >
-                  <MenuItem key={'init'} value={'All Languages'}>
-                    All Languages
-                  </MenuItem>
-                  <MenuItem key={'English'} value={'English'}>
-                    English
-                  </MenuItem>
-                  <MenuItem key={'Turkish'} value={'Turkish'}>
-                    Turkish
-                  </MenuItem>
-                  <MenuItem key={'Other'} value={'Other'}>
-                    Other
-                  </MenuItem>
-                </TextField>
+              <Autocomplete
+                disablePortal
+                required
+                id="department"
+                name="department"
+                size='small'
+                sx={{ m: 1, minWidth: 180, maxWidth: 250 }}
+                autoComplete="given-name"
+                variant="outlined"
+                label="Department"
+                value={department}
+                options={departments}
+                getOptionLabel={option => option.department_name_en}
+                onChange={(event, newValue) => {
+                  setDep(newValue);
+                }}
+                onInputChange={(event, newValue, reason) => {
+                  if (reason === 'reset') {
+                    setDep(null)
+                  }
+                }}
+                renderInput={(params) => <TextField {...params} label="Department" />}
+              />
 
 
-                <TextField
-                  select
-                  size='small'
-                  label="University"
-                  name='university'
-                  sx={{ m: 1, minWidth: 180, maxWidth: 250 }}
-                  // onChange={(e) => handleChange(e, 'university')}
-                  defaultValue={'All Universities'}
+              <Autocomplete
+                disablePortal
+                required
+                id="language"
+                name="language"
+                sx={{ m: 1, minWidth: 180, maxWidth: 250 }}
+                size='small'
+                autoComplete="given-name"
+                variant="outlined"
+                label="Language"
+                value={language}
 
-                >
-                  <MenuItem key={'init'} value={'All Universities'}>
-                    All Universities
-                  </MenuItem>
-                  {universities.map((option) => (
-                    <MenuItem key={option.id} value={option.id}>
-                      {option.university_name_en} - {option.university_name_en}
-                    </MenuItem>
-                  ))}
-                </TextField>
+                options={languages}
+                onChange={(event, newValue) => {
+                  setLan(newValue);
+                }}
+                onInputChange={(event, newValue, reason) => {
+                  if (reason === 'reset') {
+                    setLan(null)
+                  }
+                }}
+                renderInput={(params) => <TextField {...params} label="Language" />}
+              />
 
-                <TextField
-                  size='small'
-                  sx={{ m: 1, minWidth: 180, maxWidth: 250 }}
-                  name="degree"
-                  select
-                  label="Degree"
-                  defaultValue={'All Degrees'}
-                // onChange={(e) => handleChange(e, 'degree')}
-                >
-                  <MenuItem key={'init'} value={'All Degrees'}>
-                    All Degrees
-                  </MenuItem>
-                  <MenuItem key={10} value={'Associate'}>
-                    Associate
-                  </MenuItem>
-                  <MenuItem key={10} value={'Bachelor'}>
-                    Bachelor
-                  </MenuItem>
-                  <MenuItem key={10} value={'Master'}>
-                    Master
-                  </MenuItem>
-                  <MenuItem key={10} value={'PhD'}>
-                    PhD
-                  </MenuItem>
-                </TextField>
+              <Autocomplete
+                disablePortal
+                required
+                sx={{ m: 1, minWidth: 180, maxWidth: 250 }}
+                id="university"
+                name="university"
+                value={university}
+                size='small'
+                autoComplete="given-name"
+                variant="outlined"
+                label="University"
+                options={universities}
+                getOptionLabel={option => option.university_name_en}
+                onChange={(event, newValue) => {
+                  setUni(newValue);
+                }}
+                onInputChange={(event, newValue, reason) => {
+                  if (reason === 'reset') {
+                    setUni(null)
+                  }
+                }}
+                renderInput={(params) => <TextField {...params} label="University" />}
+              />
 
-                <Button type='submit' sx={{ m: 1, minWidth: 120 }} variant="outlined" startIcon={<ManageSearchRoundedIcon />}>
-                  Search
+              <Autocomplete
+                disablePortal
+                required
+                sx={{ m: 1, minWidth: 180, maxWidth: 250 }}
+                size='small'
+                id="degree"
+                name="degree"
+                value={degree}
+                variant="outlined"
+                label="Degree"
+                options={degrees}
+                onChange={(event, newValue) => {
+                  setDeg(newValue);
+                }}
+                onInputChange={(event, newValue, reason) => {
+                  if (reason === 'reset') {
+                    setDeg(null)
+                  }
+                }}
+                renderInput={(params) => <TextField {...params} label="Degree" />}
+              />
+
+              <Button onClick={handleSearch} type='submit' sx={{ m: 1, minWidth: 120 }} variant="outlined" startIcon={<ManageSearchRoundedIcon />}>
+                Search
+              </Button>
+              <Can I="add" a="Record">
+                <Button onClick={handleClickOpen} sx={{ m: 1, minWidth: 120 }} variant="contained" startIcon={<AddCircleIcon />}>
+                  Add Record
                 </Button>
-                <Button onClick={downlaodData} sx={{ m: 1, minWidth: 120 }} variant="contained" startIcon={<DownloadForOfflineIcon />}>
-                  Download
-                </Button>
+              </Can>
 
-
-              </Grid>
-              <Grid
-                container
-                direction="row"
-                justifyContent="center"
-                alignItems="center"
-              >
-                <Can I="add" a="Record">
-                  <Button onClick={handleClickOpen} sx={{ m: 1, minWidth: 120 }} variant="contained" startIcon={<AddCircleIcon />}>
-                    Add Record
-                  </Button>
-                </Can>
-
-
-              </Grid>
             </Grid>
-
-            <StickyHeadTable
-              departments={departments}
-              universities={universities}
-              setRowData={setRowData}
-              openDialopg={handleClickOpen}
-              source='dashboard'
-              columns={columns}
-              rows={prices} />
-
           </Grid>
-        </Box>
+
+          <Paper elevation={2} sx={{ width: '100%', overflow: 'hidden' }}>
+
+            <div style={{ height: 550, width: '100%' }}>
+              <DataGrid
+                rows={prices}
+                columns={myColumns}
+                pageSize={50}
+                pagination
+                loading={loading}
+                page={page}
+                onPageChange={(newPage) => handleNextPage(newPage)}
+                rowCount={count}
+
+                components={{
+                  Toolbar: CustomToolbar,
+                }}
+                onRowDoubleClick={(params, event) => {
+                  setOpenRecord(true);
+                  setRowData(params.row);
+                }}
+
+              />
+            </div>
+          </Paper>
+
+        </Grid>
       </Grid>
       <Copyright sx={{ pt: 4 }} />
     </Container>

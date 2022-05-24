@@ -1,5 +1,6 @@
 const { body } = require('express-validator');
 const { query } = require('express-validator');
+const { param } = require('express-validator');
 
 module.exports = {
   // POST /application
@@ -26,13 +27,25 @@ module.exports = {
     body('passport', 'Passport is required').exists(),
     body('personal_image', 'Personal Image is required').exists(),
 
+    body('agent_name', 'Agent is required').exists(),
+    body('company', 'Company is required').exists(),
+
+
   ],
   // GET /application
   get: [
   ],
-    // GET /application
-    checkEmail: [
-      query('email', 'Email  is required').exists(),
-    ],
+  // GET /application/:id
+  getSingle: [
+    param('id', 'ID is required').exists(),
+  ],
+  // GET /application
+  checkEmail: [
+    query('email', 'Email  is required').exists(),
+  ],
+  // PATCH /department
+  update: [
+    body('payment', 'Payment is required').optional(),
+  ],
 };
 

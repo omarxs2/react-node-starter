@@ -50,7 +50,7 @@ export default function ApplyNow() {
   };
 
   const handleRedirect = () => {
-    history.push("/app");
+    history.push("/applications");
   };
 
 

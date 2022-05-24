@@ -160,16 +160,18 @@ export default function PreferenceForm({ handleBack, personalInfo, setRef, handl
 
     let dataValues = {
       ...personalInfo,
-      department: application.department_id,
+      department: departments.filter(dep => dep.id === application.department_id)[0]?.department_name_en || '',
       language: application.language,
       degree: application.degree,
-      university: application.university_id,
+      university: universities.filter(uni => uni.id === application.university_id)[0]?.university_name_en || '',
       transcript: transcript.path,
       diploma: diploma.path,
       personal_image: personal.path,
       passport: passport.path,
       other_files: other?.path || '',
-      agent_id: user.id
+      agent_id: user.id,
+      agent_name: user.name,
+      company: user.company
     }
 
     dispatch(createApplication(dataValues)).then((res) => {
@@ -458,7 +460,7 @@ export default function PreferenceForm({ handleBack, personalInfo, setRef, handl
                   </ListItemAvatar>
                   <ListItemText
                     primary={'Diploma'}
-                    secondary={<a href={`${API_BASE_URL}/file/${diploma.path}`}>{diploma.name}</a>}
+                    secondary={<a target="_blank" href={`${API_BASE_URL}/file/${diploma.path}`}>{diploma.name}</a>}
                   />
                 </ListItem>
               }
@@ -478,7 +480,7 @@ export default function PreferenceForm({ handleBack, personalInfo, setRef, handl
                   </ListItemAvatar>
                   <ListItemText
                     primary={'Transcript'}
-                    secondary={<a href={`${API_BASE_URL}/file/${transcript.path}`}>{transcript.name}</a>}
+                    secondary={<a target="_blank" href={`${API_BASE_URL}/file/${transcript.path}`}>{transcript.name}</a>}
                   />
                 </ListItem>
               }
@@ -498,7 +500,7 @@ export default function PreferenceForm({ handleBack, personalInfo, setRef, handl
                   </ListItemAvatar>
                   <ListItemText
                     primary={'Personal Image'}
-                    secondary={<a href={`${API_BASE_URL}/file/${personal.path}`}>{personal.name}</a>}
+                    secondary={<a target="_blank" href={`${API_BASE_URL}/file/${personal.path}`}>{personal.name}</a>}
                   />
                 </ListItem>
               }
@@ -518,7 +520,7 @@ export default function PreferenceForm({ handleBack, personalInfo, setRef, handl
                   </ListItemAvatar>
                   <ListItemText
                     primary={'Passport'}
-                    secondary={<a href={`${API_BASE_URL}/file/${passport.path}`}>{passport.name}</a>}
+                    secondary={<a target="_blank" href={`${API_BASE_URL}/file/${passport.path}`}>{passport.name}</a>}
                   />
                 </ListItem>
               }
@@ -538,7 +540,7 @@ export default function PreferenceForm({ handleBack, personalInfo, setRef, handl
                   </ListItemAvatar>
                   <ListItemText
                     primary={'Other'}
-                    secondary={<a href={`${API_BASE_URL}/file/${other.path}`}>{other.name}</a>}
+                    secondary={<a target="_blank" href={`${API_BASE_URL}/file/${other.path}`}>{other.name}</a>}
                   />
                 </ListItem>
               }

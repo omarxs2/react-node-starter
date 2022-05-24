@@ -2,9 +2,26 @@ import { API_BASE_URL } from '../configs/configs';
 
 const application = {};
 
-application.getApplications = async function (filters) {
+application.getApplications = async function (role) {
 	const token = localStorage.getItem('token');
-	const res = await fetch(`${API_BASE_URL}/application`, {
+	const res = await fetch(`${API_BASE_URL}/application${role === 'Admin' ? '/all' : '/agent'}`, {
+		method: 'GET',
+		headers: {
+			Authorization: `Bearer ${token}`
+		}
+	}).then(response =>
+		response.json().then(responseJson =>
+			Promise.resolve({
+				response: responseJson
+			})
+		)
+	);
+	return res;
+};
+
+application.getSingleApplication = async function (id, role) {
+	const token = localStorage.getItem('token');
+	const res = await fetch(`${API_BASE_URL}/application${role === 'Admin' ? '/admin' : ''}/${id}`, {
 		method: 'GET',
 		headers: {
 			Authorization: `Bearer ${token}`
@@ -36,7 +53,7 @@ application.checkEmail = async function (email) {
 	return res;
 };
 
-application.updateApplication = async function (dataValues, id) {
+application.updateApplication = async function (id, dataValues) {
 	const token = localStorage.getItem('token');
 	const res = await fetch(`${API_BASE_URL}/application/${id}/`, {
 		method: 'PATCH',

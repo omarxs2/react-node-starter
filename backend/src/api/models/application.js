@@ -96,11 +96,11 @@ const Application = sequelize.define(
       },
     },
     department: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        notNull: {
-          msg: 'Years is required',
+        notEmpty: {
+          msg: 'Department is required',
         },
       },
     },
@@ -126,14 +126,28 @@ const Application = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        notNull: {
+        notEmpty: {
           msg: 'University is required',
         },
       },
     },
     agent_id: {
       type: DataTypes.INTEGER,
-      defaultValue: 0
+      defaultValue: -1
+    },
+    agent_name: {
+      type: DataTypes.STRING,
+      defaultValue: '',
+      validate: {
+        notEmpty: { msg: 'Agent is required' },
+      },
+    },
+    company: {
+      type: DataTypes.STRING,
+      defaultValue: '',
+      validate: {
+        notEmpty: { msg: 'Company is required' },
+      },
     },
     status: {
       type: DataTypes.STRING,

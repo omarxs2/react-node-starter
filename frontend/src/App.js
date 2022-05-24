@@ -25,6 +25,8 @@ const Users = React.lazy(() => import("./app/views/users/Users"));
 const Universities = React.lazy(() => import("./app/views/universities/Universities"));
 const Departments = React.lazy(() => import("./app/views/departments/Departments"));
 const Apply = React.lazy(() => import("./app/views/apply-now/ApplyNow"));
+const Applications = React.lazy(() => import("./app/views/applications/Applications"));
+const SingleApplication = React.lazy(() => import("./app/views/applications/SingleApplication"));
 
 //public pages
 const ApplyNow = React.lazy(() => import("./pages/apply/ApplyNow"));
@@ -67,6 +69,8 @@ function App() {
                     <Switch>
                       <Route path="/app" component={Dashboard} />
                       <Route path="/apply-now" component={Apply} />
+                      <Route exact path="/applications" component={Applications} />
+                      <Route path="/applications/:id" component={SingleApplication} />
 
                       {
                         role === 'Admin' && (

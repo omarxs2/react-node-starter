@@ -17,6 +17,8 @@ exports.list = async (req, res, next) => {
     const university = req.query.university || '';
     const language = req.query.language || '';
     const degree = req.query.degree || '';
+    const limit = 50;
+    const skipIndex = (req.query.page || 1) * limit;
 
     let where = {};
 
@@ -53,10 +55,14 @@ exports.list = async (req, res, next) => {
       };
     }
 
-    const prices = await priceRepo.findAllByMultipleFields(where)
+    const prices = await priceRepo.findAllWithPagination(limit, skipIndex, where)
+    const count = await Price.count({
+      where: where
+    });
     return res.json({
       success: true,
-      data: prices
+      data: prices,
+      count
     });
   } catch (e) {
     next(e);
@@ -74,7 +80,7 @@ exports.create = async (req, res, next) => {
 
     let price = await Price.create({
       ..._.pick(req.body, ['department_id',
-        'university_id', 'language', 'years','degree',
+        'university_id', 'language', 'years', 'degree',
         'currency', 'price_before', 'price_after']),
     });
     price = price.dataValues;

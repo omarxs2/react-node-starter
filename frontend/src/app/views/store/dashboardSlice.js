@@ -1,10 +1,18 @@
 import { createSlice } from '@reduxjs/toolkit'
 import priceService from '../../../services/priceService';
 
-export const getPrices = (filters) => async dispatch => {
-    return priceService.getPrices(filters).then(res => {
+export const getPrices = (filters, page) => async dispatch => {
+    return priceService.getPrices(filters, page).then(res => {
         if (res.response && res.response.success) {
-            return dispatch(setPrices(res.response.data));
+            dispatch(setCount(res.response.count));
+            if (page === 0) {
+                dispatch(setPrices(res.response.data));
+            }
+            else {
+                dispatch(addToPrices(res.response.data));
+
+            }
+            return true;
         }
     }).catch(errors => {
         return dispatch(setErrors(errors));
@@ -43,6 +51,7 @@ export const deletePrice = (id) => async dispatch => {
 
 const initialState = {
     prices: [],
+    count: 0,
     errors: []
 }
 
@@ -53,6 +62,12 @@ export const dashboardSlice = createSlice({
         setPrices: (state, action) => {
             state.prices = action.payload;
         },
+        setCount: (state, action) => {
+            state.count = action.payload;
+        },
+        addToPrices: (state, action) => {
+            state.prices = [...state.prices, ...action.payload];
+        },
         setErrors: (state, action) => {
             state.errors = action.payload;
         },
@@ -60,6 +75,6 @@ export const dashboardSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { setPrices, setErrors } = dashboardSlice.actions
+export const { setPrices,setCount, addToPrices, setErrors } = dashboardSlice.actions
 
 export default dashboardSlice.reducer;

@@ -12,9 +12,9 @@ const router = express.Router();
 
 router.use('/auth', authRoutes);
 router.use('/user', authenticate('admin'), userRoutes);
-router.use('/university', authenticate('admin'), universityRoutes);
-router.use('/department', authenticate('admin'), departmentRoutes);
-router.use('/price', authenticate('admin'), priceRoutes);
+router.use('/university', universityRoutes);
+router.use('/department', departmentRoutes);
+router.use('/price', priceRoutes);
 router.use('/application', applicationRoutes);
 router.use('/file', fileRoutes);
 

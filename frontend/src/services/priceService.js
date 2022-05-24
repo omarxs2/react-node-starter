@@ -2,10 +2,10 @@ import { API_BASE_URL } from '../configs/configs';
 
 const price = {};
 
-price.getPrices = async function (filters) {
+price.getPrices = async function (filters,page) {
 	const token = localStorage.getItem('token');
 	const res = await fetch(`${API_BASE_URL}/price?university=${filters.university}&department=${filters.department}
-	&language=${filters.language}&degree=${filters.degree}`, {
+	&language=${filters.language}&degree=${filters.degree}&page=${page}`, {
 		method: 'GET',
 		headers: {
 			Authorization: `Bearer ${token}`

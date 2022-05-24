@@ -1,10 +1,22 @@
 import { createSlice } from '@reduxjs/toolkit'
 import applicationService from '../../../services/applicationService';
 
-export const getApplications = (filters) => async dispatch => {
-    return applicationService.getApplications(filters).then(res => {
+export const getApplications = (role) => async dispatch => {
+    return applicationService.getApplications(role).then(res => {
         if (res.response && res.response.success) {
             return dispatch(setApplications(res.response.data));
+        }
+    }).catch(errors => {
+        return dispatch(setErrors(errors));
+    });
+};
+
+export const getSingleApplication = (id, role) => async dispatch => {
+    return applicationService.getSingleApplication(id, role).then(res => {
+        if (res.response && res.response.success) {
+            return dispatch(setSingleApplication(res.response.data));
+        } else {
+            return dispatch(setSingleApplication(null));
         }
     }).catch(errors => {
         return dispatch(setErrors(errors));
@@ -21,8 +33,8 @@ export const createApplication = (data) => async dispatch => {
     });
 };
 
-export const updateApplication = (data, id) => async dispatch => {
-    return applicationService.updateApplicatione(data, id).then(res => {
+export const updateApplication = (id, data) => async dispatch => {
+    return applicationService.updateApplication(id, data).then(res => {
         if (res.response && res.response.success) {
             return true;
         }
@@ -34,15 +46,22 @@ export const updateApplication = (data, id) => async dispatch => {
 
 const initialState = {
     applications: [],
+    singleApplication: null,
     errors: []
 }
 
-export const dashboardSlice = createSlice({
+export const applicationApp = createSlice({
     name: 'application',
     initialState,
     reducers: {
         setApplications: (state, action) => {
             state.applications = action.payload;
+        },
+        setSingleApplication: (state, action) => {
+            state.singleApplication = action.payload;
+        },
+        deleteSingleApplication: (state, action) => {
+            state.singleApplication = null;
         },
         setErrors: (state, action) => {
             state.errors = action.payload;
@@ -51,6 +70,6 @@ export const dashboardSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { setApplications, setErrors } = dashboardSlice.actions
+export const { setSingleApplication, setApplications, setErrors } = applicationApp.actions
 
-export default dashboardSlice.reducer;
+export default applicationApp.reducer;
